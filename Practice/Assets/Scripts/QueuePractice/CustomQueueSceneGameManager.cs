@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using YYY;
 
-public class GameManager : MonoBehaviour
+public class CustomQueueSceneGameManager : MonoBehaviour
 {
     #region inspector
     [SerializeField] Button btn_GenerateQueueBox;
@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
 
     void OnClickGenerateQueueBox()
     {
-        var clone = Resources.Load<QueueBox>("QueueBox");
+        var clone = Resources.Load<QueueBox>("QueuePractice/QueueBox");
         if (clone == null)
             return;
 
