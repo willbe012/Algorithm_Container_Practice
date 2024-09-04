@@ -1,26 +1,33 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class CustomLinkedList<T>
 {
-    public class CustonNode<T>
+    public class CustomNode<T>
     {
         public T value { get; set; }
-        public CustonNode<T> linkedNode { get; set; }
+        public CustomNode<T> linkedNode { get; set; }
 
-        public CustonNode(T value)
+        public CustomNode(T value)
         {
             this.value = value;
             this.linkedNode = null;
         }
     }
 
-    private CustonNode<T> parent = null;
+    private CustomNode<T> parent = null;
+    private int count;
+
+    public int GetCount()
+    {
+        return count;
+    }
     public void AddElement(T value)
     {
-        CustonNode<T> node = new CustonNode<T>(value);
+        CustomNode<T> node = new CustomNode<T>(value);
 
         if (parent == null)
         {
@@ -28,27 +35,29 @@ public class CustomLinkedList<T>
         }
         else
         {
-            CustonNode<T> current = parent;
+            CustomNode<T> current = parent;
             while (current.linkedNode != null)
             {
                 current = current.linkedNode;
             }
             current.linkedNode = node;
         }
+        count++;
     }
-    public bool RemoveElement(T value)
+    public void RemoveElement(T value)
     {
         if (parent == null)
-            return false;
+            return;
 
         if (parent.value.Equals(value))
         {
             parent = parent.linkedNode;
-            return true;
+            count--;
+            return;
         }
 
-        CustonNode<T> cur = parent;
-        CustonNode<T> prev = null;
+        CustomNode<T> cur = parent;
+        CustomNode<T> prev = null;
 
         while (cur != null && !cur.value.Equals(value))
         {
@@ -57,9 +66,27 @@ public class CustomLinkedList<T>
         }
 
         if (cur == null)
-            return false;
+            return;
 
         prev.linkedNode = cur.linkedNode;
-        return true;
+        count--;
+        return;
     }
- }
+
+    public T Get(int index)
+    {
+        if (index < 0 || index >= count)
+            return default;
+
+        CustomNode<T> current = parent;
+        int currentIndex = 0;
+
+        while (currentIndex < index)
+        {
+            current = current.linkedNode;
+            currentIndex++;
+        }
+
+        return current.value;
+    }
+}
