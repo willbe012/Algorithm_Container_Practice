@@ -31,7 +31,7 @@ public class CustomStackSceneGameManager : MonoBehaviour
 
     void RefreshStackIndexes()
     {
-        for(int i = 0; i < stackBoxes.GetTotalCount(); i++) 
+        for(int i = 0; i < stackBoxes.GetCount(); i++) 
         {
             var element = stackBoxes.GetElementAt(i);
             element.SetIndex(i);
@@ -53,7 +53,7 @@ public class CustomStackSceneGameManager : MonoBehaviour
             return;
 
 
-        stackBox.SetIndex(stackBoxes.GetTotalCount());
+        stackBox.SetIndex(stackBoxes.GetCount());
         stackBoxes.Push(stackBox);
 
     }

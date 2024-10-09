@@ -31,7 +31,7 @@ public class CustomQueueSceneGameManager : MonoBehaviour
 
     void RefreshQueueIndexes()
     {
-        for(int i = 0; i < queueBoxes.GetTotalCount(); i++) 
+        for(int i = 0; i < queueBoxes.GetCount(); i++) 
         {
             var element = queueBoxes.GetElementAt(i);
             element.SetIndex(i);
@@ -53,7 +53,7 @@ public class CustomQueueSceneGameManager : MonoBehaviour
             return;
 
 
-        queueBox.SetIndex(queueBoxes.GetTotalCount());
+        queueBox.SetIndex(queueBoxes.GetCount());
         queueBoxes.EnQueue(queueBox);
 
     }

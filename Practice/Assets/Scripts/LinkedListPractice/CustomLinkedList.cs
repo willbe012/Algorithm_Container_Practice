@@ -1,76 +1,87 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
-using UnityEngine;
-
 public class CustomLinkedList<T>
 {
     public class CustomNode<T>
     {
         public T value { get; set; }
-        public CustomNode<T> linkedNode { get; set; }
+        public CustomNode<T> next { get; set; }
+        public CustomNode<T> prev { get; set; }
 
         public CustomNode(T value)
         {
             this.value = value;
-            this.linkedNode = null;
+            this.next = null;
+            this.prev = null;
         }
     }
 
-    private CustomNode<T> parent = null;
+    private CustomNode<T> root = null;
+    private CustomNode<T> last = null;
     private int count;
 
     public int GetCount()
     {
         return count;
     }
+
     public void AddElement(T value)
     {
         CustomNode<T> node = new CustomNode<T>(value);
 
-        if (parent == null)
+        if (root == null)
         {
-            parent = node;
+            root = node;
+            last = node;
         }
         else
         {
-            CustomNode<T> current = parent;
-            while (current.linkedNode != null)
-            {
-                current = current.linkedNode;
-            }
-            current.linkedNode = node;
+            last.next = node;
+            node.prev = last;
+            last = node;
         }
         count++;
     }
-    public void RemoveElement(T value)
+
+
+    // 마찬가지로 T return 해서 사용자가 가지고 있다가 사용할 수 있게끔 한다.
+    public T RemoveElement(T value)
     {
-        if (parent == null)
-            return;
+        if (root == null)
+            return default;
 
-        if (parent.value.Equals(value))
+        CustomNode<T> current = root;
+
+        while (current != null && !current.value.Equals(value))
         {
-            parent = parent.linkedNode;
-            count--;
-            return;
+            current = current.next;
         }
 
-        CustomNode<T> cur = parent;
-        CustomNode<T> prev = null;
-
-        while (cur != null && !cur.value.Equals(value))
+        if (current == null)
+            return default;
+        
+        if (current == root)
         {
-            prev = cur;
-            cur = cur.linkedNode;
+            root = root.next;
+            if (root != null)
+                root.prev = null;
+        }
+        else if (current == last)
+        {
+            root = last.prev;
+            if (last != null)
+                last.next = null;
+        }
+        else
+        {
+            current.prev.next = current.next;
+            if (current.next != null)
+            {
+                current.next.prev = current.prev;
+            }
         }
 
-        if (cur == null)
-            return;
-
-        prev.linkedNode = cur.linkedNode;
         count--;
-        return;
+
+        return current.value;
     }
 
     public T Get(int index)
@@ -78,13 +89,30 @@ public class CustomLinkedList<T>
         if (index < 0 || index >= count)
             return default;
 
-        CustomNode<T> current = parent;
-        int currentIndex = 0;
+        CustomNode<T> current;
+        int currentIndex;
 
-        while (currentIndex < index)
+
+        // 이진 탐색 알고리즘 사용해보기.
+        if (index < count / 2)
         {
-            current = current.linkedNode;
-            currentIndex++;
+            current = root;
+            currentIndex = 0;
+            while (currentIndex < index)
+            {
+                current = current.next;
+                currentIndex++;
+            }
+        }
+        else
+        {
+            current = last;
+            currentIndex = count - 1;
+            while (currentIndex > index)
+            {
+                current = current.prev;
+                currentIndex--;
+            }
         }
 
         return current.value;
