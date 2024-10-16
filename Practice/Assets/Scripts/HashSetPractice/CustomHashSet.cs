@@ -12,6 +12,8 @@ public class CustomHashSet<T>
     // 기본적으로 Add, Remove 필요. 중복을 허용하지 않으니 중복검사 Contains 추가.
     // 해시 코드를 배열의 길이로 모듈러 연산(%연산)하여 해당 버킷의 인덱스 결정.
 
+    // T를 받으면 반드시 필요한건? => Equals와 GetHashCode() 재정의 해주는 것..!
+
     private int capacity;
     private T[] buckets;
     private int size;
@@ -19,7 +21,7 @@ public class CustomHashSet<T>
     CustomHashSet()
     {
         size = 0;
-        capacity = 16;
+        capacity = 11;
         buckets = new T[capacity];
     }
 
@@ -47,16 +49,20 @@ public class CustomHashSet<T>
     {
         var index = GetIndex(item);
 
-        if (buckets[index] != null)
-            return true;
+        if (buckets[index] != null && item.Equals(buckets[index]))
+            return true; 
 
         return false;
     }
 
+    // 예시로 int가 들어왔다고 생각해보면,, 겹치는게 분명히 나온다.
+    // 겹치는 건 어쩔 수 없으니까 어떻게 해야할까?
+    // => Contains에서 실제 item이 일치하는지도 확인하면 된다.
+
     private int GetIndex(T item)
     {
         var hashCode = item.GetHashCode();
-        var index = hashCode & buckets.Length;
+        var index = hashCode % buckets.Length;
         return index;
     }
 

@@ -1,5 +1,6 @@
 public class CustomLinkedList<T>
 {
+
     public class CustomNode<T>
     {
         public T value { get; set; }
@@ -23,7 +24,7 @@ public class CustomLinkedList<T>
         return count;
     }
 
-    public void AddElement(T value)
+    public T AddElement(T value)
     {
         CustomNode<T> node = new CustomNode<T>(value);
 
@@ -39,6 +40,8 @@ public class CustomLinkedList<T>
             last = node;
         }
         count++;
+
+        return value;
     }
 
 
@@ -93,7 +96,6 @@ public class CustomLinkedList<T>
         int currentIndex;
 
 
-        // 이진 탐색 알고리즘 사용해보기.
         if (index < count / 2)
         {
             current = root;
