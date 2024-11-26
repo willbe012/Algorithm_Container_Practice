@@ -144,6 +144,60 @@ public static class Algorithms
     }
 
 
+    public static void MergeSort2(int[] array)
+    {
+        // 배열 길이를 가져옵니다.
+        int n = array.Length;
+
+        // 병합할 배열의 크기(step)는 1부터 시작해 배열 전체 길이까지 두 배씩 증가.
+        for (int step = 1; step < n; step *= 2)
+        {
+            // 현재 step 크기로 배열을 나누고 병합.
+            for (int start = 0; start < n; start += 2 * step)
+            {
+                // 병합할 두 부분의 경계값 계산.
+                int mid = Math.Min(start + step, n); // 왼쪽 배열의 끝
+                int end = Math.Min(start + 2 * step, n); // 오른쪽 배열의 끝
+
+                // 병합된 결과를 저장할 임시 배열 생성.
+                int[] merged = new int[end - start];
+
+                int i = start, j = mid, k = 0;
+
+                // 1. 왼쪽과 오른쪽 배열 병합.
+                while (i < mid && j < end)
+                {
+                    if (array[i] <= array[j])
+                    {
+                        merged[k++] = array[i++];
+                    }
+                    else
+                    {
+                        merged[k++] = array[j++];
+                    }
+                }
+
+                // 2. 왼쪽 배열에 남은 값 복사.
+                while (i < mid)
+                {
+                    merged[k++] = array[i++];
+                }
+
+                // 3. 오른쪽 배열에 남은 값 복사.
+                while (j < end)
+                {
+                    merged[k++] = array[j++];
+                }
+
+                // 병합된 결과를 원본 배열에 복사.
+                for (i = 0; i < merged.Length; i++)
+                {
+                    array[start + i] = merged[i];
+                }
+            }
+        }
+    }
+
     // 문제: 주어진 동전들로 특정 금액을 만드는데 필요한 최소 동전 수를 구하는 함수를 작성하세요.
 
     // 그리디 알고리즘
