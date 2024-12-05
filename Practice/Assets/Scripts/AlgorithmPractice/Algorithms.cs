@@ -143,60 +143,83 @@ public static class Algorithms
 
     }
 
-
     public static void MergeSort2(int[] array)
     {
-        // 배열 길이를 가져옵니다.
+        // 재귀 X 
+        // 가장 작은 단위에서 큰 단위로 병합.  Bottom-Up
+        // 그러면 최초 size가 1인 상태에서 시작을 해야한다.
+        // 병합과정은 비슷함. 배열끼리 비교해서 정렬.
+        // ex) 1 / 5 / 3 / 6  => 1,5 / 3,6 => 1,3,5,6
+
+        // 최초의 작은 단위를 구하는 방법이 중요할 듯?
+        // size가 *=2 씩 증가하는 이유는,, 1 -> 2 -> 4 -> 8... 정확히 절반씩 분열했던걸 반대로!
+
+        // left = 왼쪽 부분 배열의 시작 인덱스
+        // mid = 왼쪽 배열과 오른쪽 배열을 나누는 중간점
+        // right = 배열의 끝
+
+
+        if (array.Length <= 1) return;
+
         int n = array.Length;
+        int[] temp = new int[n]; // 병합 결과 저장하는 임시 배열
 
-        // 병합할 배열의 크기(step)는 1부터 시작해 배열 전체 길이까지 두 배씩 증가.
-        for (int step = 1; step < n; step *= 2)
+
+        for (int size = 1; size < n; size *= 2)
         {
-            // 현재 step 크기로 배열을 나누고 병합.
-            for (int start = 0; start < n; start += 2 * step)
+            for (int leftStart = 0; leftStart < n; leftStart += 2 * size)
             {
-                // 병합할 두 부분의 경계값 계산.
-                int mid = Math.Min(start + step, n); // 왼쪽 배열의 끝
-                int end = Math.Min(start + 2 * step, n); // 오른쪽 배열의 끝
+                // 병합할 두 부분 배열의 시작점과 끝점 계산
+                int mid = Math.Min(leftStart + size, n); // 중간점
+                int rightEnd = Math.Min(leftStart + 2 * size, n); // 끝점
 
-                // 병합된 결과를 저장할 임시 배열 생성.
-                int[] merged = new int[end - start];
-
-                int i = start, j = mid, k = 0;
-
-                // 1. 왼쪽과 오른쪽 배열 병합.
-                while (i < mid && j < end)
-                {
-                    if (array[i] <= array[j])
-                    {
-                        merged[k++] = array[i++];
-                    }
-                    else
-                    {
-                        merged[k++] = array[j++];
-                    }
-                }
-
-                // 2. 왼쪽 배열에 남은 값 복사.
-                while (i < mid)
-                {
-                    merged[k++] = array[i++];
-                }
-
-                // 3. 오른쪽 배열에 남은 값 복사.
-                while (j < end)
-                {
-                    merged[k++] = array[j++];
-                }
-
-                // 병합된 결과를 원본 배열에 복사.
-                for (i = 0; i < merged.Length; i++)
-                {
-                    array[start + i] = merged[i];
-                }
+                // 병합 수행
+                Merge(array, temp, leftStart, mid, rightEnd);
             }
         }
     }
+
+    private static void Merge(int[] array, int[] temp, int leftStart, int mid, int rightEnd)
+    {
+        int i = leftStart, j = mid, k = leftStart;
+
+        // 두 부분 배열을 비교하여 병합
+        while (i < mid && j < rightEnd)
+        {
+            if (array[i] <= array[j])
+            {
+                temp[k] = array[i];
+                ++k;
+                ++i;
+            }
+            else
+            {
+                temp[k] = array[j];
+                ++k;
+                ++j;
+            }
+        }
+
+        while (i < mid)
+        {
+            temp[k] = array[i];
+            ++k;
+            ++i;
+        }
+
+        while (j < rightEnd)
+        {
+            temp[k] = array[j];
+            ++k;
+            ++j;
+        }
+
+        for (i = leftStart; i < rightEnd; i++)
+        {
+            array[i] = temp[i];
+        }
+    }
+
 
     // 문제: 주어진 동전들로 특정 금액을 만드는데 필요한 최소 동전 수를 구하는 함수를 작성하세요.
 
